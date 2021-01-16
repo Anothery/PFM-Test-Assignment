@@ -2,7 +2,9 @@ package team.pfm.test.ui.main
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import dagger.android.support.DaggerAppCompatActivity
@@ -33,15 +35,26 @@ class MainActivity : DaggerAppCompatActivity(R.layout.activity_main) {
 
 
     private fun initUsersList() {
-        adapter = UsersAdapter(Glide.with(this)) { viewModel.onUserItemClicked(it) }
-        binding.rvUsers.layoutManager = LinearLayoutManager(this)
+        adapter = UsersAdapter(
+            Glide.with(this),
+            viewModel::onUserItemClicked,
+            viewModel::onUserItemRemoved
+        )
+
+        binding.rvUsers.layoutManager = LinearLayoutManager(this@MainActivity)
         binding.rvUsers.adapter = adapter
+
+        val swipeHandler = object : SwipeToDeleteCallback(this) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                adapter?.removeItemAt(viewHolder.adapterPosition)
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(binding.rvUsers)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         binding.rvUsers.adapter = null
     }
-
-
 }

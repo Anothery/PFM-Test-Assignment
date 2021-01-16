@@ -5,12 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import team.pfm.test.data.network.User
+import team.pfm.test.data.model.User
 import team.pfm.test.databinding.UserItemBinding
 
 class UsersAdapter(
     private val glide: RequestManager,
-    private val onItemClicked: (Int) -> Unit
+    private val onItemClicked: (Int) -> Unit,
+    private val onItemRemoved: (Int) -> Unit
 ) : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
 
     private var users: ArrayList<User> = arrayListOf()
@@ -37,15 +38,21 @@ class UsersAdapter(
         super.onViewRecycled(holder)
     }
 
+    fun removeItemAt(position: Int) {
+        onItemRemoved(users[position].id)
+        users.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
     inner class ViewHolder(private val binding: UserItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(user: User) {
-            binding.root.setOnClickListener { onItemClicked(user.id) }
-            binding.tvFirstName.text = user.firstName
-            binding.tvLastName.text = user.lastName
+        fun bind(users: User) {
+            binding.root.setOnClickListener { onItemClicked(users.id) }
+            binding.tvFirstName.text = users.firstName
+            binding.tvLastName.text = users.lastName
 
-            binding.ivAvatar.apply { glide.load(user.avatar).into(this) }
+            binding.ivAvatar.apply { glide.load(users.avatar).into(this) }
         }
 
         fun recycle() {

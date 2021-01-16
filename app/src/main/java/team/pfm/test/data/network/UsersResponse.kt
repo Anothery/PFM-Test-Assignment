@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class UsersResponse(
     @SerializedName("data")
-    val data: List<User>,
+    val data: List<UserDetails>,
     @SerializedName("page")
     val page: Int,
     @SerializedName("per_page")
@@ -18,7 +18,7 @@ data class UsersResponse(
     val totalPages: Int
 )
 
-data class User(
+data class UserDetails(
     @SerializedName("avatar")
     val avatar: String,
     @SerializedName("email")

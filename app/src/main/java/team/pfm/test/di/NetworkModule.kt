@@ -1,6 +1,5 @@
 package team.pfm.test.di
 
-import androidx.viewbinding.BuildConfig
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -9,6 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import team.pfm.test.BuildConfig
 import team.pfm.test.data.UsersRepository
+import team.pfm.test.data.local.UsersDatabase
 import team.pfm.test.data.network.UsersApiService
 import javax.inject.Singleton
 
@@ -36,5 +36,5 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideUsersRepository(api: UsersApiService) = UsersRepository(api)
+    fun provideUsersRepository(api: UsersApiService, db: UsersDatabase) = UsersRepository(api, db)
 }

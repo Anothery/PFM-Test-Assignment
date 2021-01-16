@@ -1,7 +1,7 @@
 package team.pfm.test.ui.main
 
 import androidx.recyclerview.widget.DiffUtil
-import team.pfm.test.data.network.User
+import team.pfm.test.data.model.User
 
 
 class UsersDiffCallback(private val oldList: List<User>, private val newList: List<User>) :

@@ -23,10 +23,13 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "REQRES_URL", "\"https://reqres.in/api/\""
+            minifyEnabled false
+            buildConfigField "String", "REQRES_URL", '"https://reqres.in/api/"'
+            buildConfigField "String", "DB_NAME", '"users"'
         }
         release {
-            buildConfigField "String", "REQRES_URL", "\"https://reqres.in/api/\""
+            buildConfigField "String", "REQRES_URL", '"https://reqres.in/api/"'
+            buildConfigField "String", "DB_NAME", '"users"'
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -73,6 +76,13 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:2.28.3"
     kapt "com.google.dagger:dagger-compiler:2.28.3"
     kapt "com.google.dagger:dagger-android-processor:2.28.3"
+
+    // Database
+    def room_version = "2.2.6"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
 
     // Other
     implementation 'com.kirich1409.viewbindingpropertydelegate:vbpd-noreflection:1.4.1'
