@@ -11,7 +11,8 @@ import team.pfm.test.databinding.UserItemBinding
 class UsersAdapter(
     private val glide: RequestManager,
     private val onItemClicked: (Int) -> Unit,
-    private val onItemRemoved: (Int) -> Unit
+    private val onItemRemoved: (Int) -> Unit,
+    private val onEditButtonClicked: (Int) -> Unit
 ) : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
 
     private var users: ArrayList<User> = arrayListOf()
@@ -44,15 +45,25 @@ class UsersAdapter(
         notifyItemRemoved(position)
     }
 
+    fun updateUser(updatedUser: User) {
+        val position = users.indexOfFirst { it.id == updatedUser.id }
+        if (position >= 0) {
+            users[position] = updatedUser
+            notifyItemChanged(position)
+        }
+    }
+
     inner class ViewHolder(private val binding: UserItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(users: User) {
-            binding.root.setOnClickListener { onItemClicked(users.id) }
-            binding.tvFirstName.text = users.firstName
-            binding.tvLastName.text = users.lastName
+        fun bind(user: User) {
+            binding.root.setOnClickListener { onItemClicked(user.id) }
+            binding.tvFirstName.text = user.firstName
+            binding.tvLastName.text = user.lastName
 
-            binding.ivAvatar.apply { glide.load(users.avatar).into(this) }
+            binding.ivAvatar.apply { glide.load(user.avatar).into(this) }
+
+            binding.btnEdit.setOnClickListener { onEditButtonClicked(user.id) }
         }
 
         fun recycle() {

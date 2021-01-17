@@ -21,7 +21,10 @@ abstract class SwipeToDeleteCallback(context: Context) :
     private val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
 
     init {
-        DrawableCompat.setTint(DrawableCompat.wrap(deleteIcon), Color.GRAY)
+        DrawableCompat.setTint(
+            DrawableCompat.wrap(deleteIcon),
+            ContextCompat.getColor(context, R.color.colorPrimary)
+        )
     }
 
     override fun getMovementFlags(

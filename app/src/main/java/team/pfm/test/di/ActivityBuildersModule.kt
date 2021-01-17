@@ -6,7 +6,6 @@ import team.pfm.test.ui.main.MainActivity
 
 @Module
 abstract class ActivityBuildersModule {
-
-    @ContributesAndroidInjector(modules = [ViewModelModule::class])
+    @ContributesAndroidInjector(modules = [MainFragmentBuildersModule::class])
     abstract fun provideMainActivity(): MainActivity
 }

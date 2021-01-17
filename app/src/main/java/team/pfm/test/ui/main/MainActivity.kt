@@ -1,6 +1,7 @@
 package team.pfm.test.ui.main
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,15 +10,17 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import dagger.android.support.DaggerAppCompatActivity
 import team.pfm.test.R
+import team.pfm.test.data.model.User
 import team.pfm.test.databinding.ActivityMainBinding
+import team.pfm.test.ui.edituserdetails.EditUserDetailsFragment
+import team.pfm.test.ui.userdetails.UserDetailsFragment
 import javax.inject.Inject
 
-class MainActivity : DaggerAppCompatActivity(R.layout.activity_main) {
+class MainActivity : DaggerAppCompatActivity(R.layout.activity_main),
+    EditUserDetailsFragment.OnEditSuccessListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-    }
+    private val viewModel: MainViewModel by viewModels { viewModelFactory }
 
     private val binding by viewBinding(ActivityMainBinding::bind)
     private var adapter: UsersAdapter? = null
@@ -28,17 +31,36 @@ class MainActivity : DaggerAppCompatActivity(R.layout.activity_main) {
 
         initUsersList()
 
+        initSwipeRefresh()
+        viewModel.refreshing.observe(this, { binding.srlUsers.isRefreshing = it })
+
         viewModel.users.observe(this, {
             adapter?.setUsers(it)
         })
-    }
 
+        viewModel.editDetails.observe(this, { userId ->
+            val tag = EditUserDetailsFragment::class.simpleName
+            if (supportFragmentManager.findFragmentByTag(tag) == null) {
+                val dialog = EditUserDetailsFragment.newInstance(userId)
+                dialog.show(supportFragmentManager, tag)
+            }
+        })
+
+        viewModel.showDetails.observe(this, { userId ->
+            val tag = UserDetailsFragment::class.simpleName
+            if (supportFragmentManager.findFragmentByTag(tag) == null) {
+                val dialog = UserDetailsFragment.newInstance(userId)
+                dialog.show(supportFragmentManager, tag)
+            }
+        })
+    }
 
     private fun initUsersList() {
         adapter = UsersAdapter(
             Glide.with(this),
             viewModel::onUserItemClicked,
-            viewModel::onUserItemRemoved
+            viewModel::onUserItemRemoved,
+            viewModel::onEditButtonClicked
         )
 
         binding.rvUsers.layoutManager = LinearLayoutManager(this@MainActivity)
@@ -53,8 +75,16 @@ class MainActivity : DaggerAppCompatActivity(R.layout.activity_main) {
         itemTouchHelper.attachToRecyclerView(binding.rvUsers)
     }
 
+    private fun initSwipeRefresh() {
+        binding.srlUsers.setOnRefreshListener { viewModel.onSwipeRefresh() }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         binding.rvUsers.adapter = null
+    }
+
+    override fun onEditSuccess(updatedUser: User) {
+        adapter?.updateUser(updatedUser)
     }
 }
