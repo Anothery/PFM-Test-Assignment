@@ -12,16 +12,7 @@ class UsersRepository @Inject constructor(
 ) {
     suspend fun getUsers(): List<User> {
         val usersResponse = usersApi.getUsers()
-        val users = usersResponse.data.map {
-            User(
-                it.id,
-                it.avatar,
-                it.email,
-                it.firstName,
-                it.lastName
-            )
-        }
-
+        val users = usersResponse.data.map(User::mapFromResponse)
         db.usersDao().insertUsers(users)
         return users
     }
