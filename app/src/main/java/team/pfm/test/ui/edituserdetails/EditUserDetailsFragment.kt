@@ -6,15 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.android.support.DaggerDialogFragment
+import team.pfm.test.R
 import team.pfm.test.data.model.User
 import team.pfm.test.databinding.FragmentEditUserDetailsBinding
 import javax.inject.Inject
 
-
 class EditUserDetailsFragment : DaggerDialogFragment() {
-    private var _binding: FragmentEditUserDetailsBinding? = null
-    private val binding get() = _binding!!
+    private val binding by viewBinding(FragmentEditUserDetailsBinding::bind)
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -38,8 +38,7 @@ class EditUserDetailsFragment : DaggerDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentEditUserDetailsBinding.inflate(inflater, container, false)
-        return binding.root
+        return inflater.inflate(R.layout.fragment_edit_user_details, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,10 +76,4 @@ class EditUserDetailsFragment : DaggerDialogFragment() {
     interface OnEditSuccessListener {
         fun onEditSuccess(updatedUser: User)
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
 }

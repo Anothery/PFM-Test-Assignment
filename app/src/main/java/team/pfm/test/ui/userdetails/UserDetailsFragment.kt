@@ -6,14 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import dagger.android.support.DaggerDialogFragment
+import team.pfm.test.R
 import team.pfm.test.databinding.FragmentUserDetailsBinding
 import javax.inject.Inject
 
 class UserDetailsFragment : DaggerDialogFragment() {
-    private var _binding: FragmentUserDetailsBinding? = null
-    private val binding get() = _binding!!
+    private val binding by viewBinding(FragmentUserDetailsBinding::bind)
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -36,8 +37,7 @@ class UserDetailsFragment : DaggerDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentUserDetailsBinding.inflate(inflater, container, false)
-        return binding.root
+        return inflater.inflate(R.layout.fragment_user_details, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,10 +52,4 @@ class UserDetailsFragment : DaggerDialogFragment() {
 
         viewModel.showUserDetails(requireArguments().getInt(USER_ID))
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
 }
